@@ -37,11 +37,9 @@ with_mock(
         expect_true(exists("key3"))
       })
       test_that("objects don't exist after they expire", {
-        set("key4", "value4", expires_in = "1 minute from now")
+        set("key4", "value4", expires_in = "0 seconds from now")
         expect_true(exists("key4"))
-        pretend_now_is("1 minute from now", {
-          expect_false(exists("key4"))
-        })
+        expect_false(exists("key4"))
       })
     })
 

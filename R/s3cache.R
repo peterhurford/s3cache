@@ -86,6 +86,7 @@ get_object_metadata <- function(key, path) {
 }
 
 expire_if_expired <- function(key, path) {
+  if (!s3mpi::s3exists(file.path(key, "value"))) { return(NULL) }
   metadata <- get_object_metadata(key, path)
   has_expiration <- !is.null(metadata$expires_in)
   if (!has_expiration) { return(NULL) }
