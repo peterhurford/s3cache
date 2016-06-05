@@ -13,7 +13,7 @@ set <- checkr::ensure(
     expires_in %is% simple_string || expires_in %is% POSIXt || expires_in %is% NULL
   ),
   function(key, value, path = default_path(), expires_in = NULL) {
-    if (exists(name, path = path)) {
+    if (exists(key, path = path)) {
       stop("There already is a cache for ", sQuote(key),
         ". You can use s3cache::forget to overwrite.")
     }
@@ -49,7 +49,7 @@ exists <- checkr::ensure(
     path %is% simple_string),
   function(key, path = default_path()) {
     expire_if_expired(key, path = path)
-    s3mpi::s3exists(key, path = path)
+    s3mpi::s3exists(paste0(key, "/value"), path = path)
   })
 
 #' Delete the s3cache at a particular key.
@@ -63,7 +63,8 @@ forget <- checkr::ensure(
     path %is% simple_string),
   function(key, path = default_path()) {
     if (exists(key, path = path)) {
-      s3mpi::s3delete(key, path = path)
+      s3mpi::s3delete(paste0(key, "/value"), path = path)
+      s3mpi::s3delete(paste0(key, "/metadata"), path = path)
     }
   })
 
