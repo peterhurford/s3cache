@@ -1,4 +1,4 @@
-## S3Cache
+## S3Cache <a href="https://travis-ci.org/peterhurford/s3cache"><img src="https://img.shields.io/travis/peterhurford/s3cache.svg"></a> <a href="https://codecov.io/github/peterhurford/s3cache"><img src="https://img.shields.io/codecov/c/github/peterhurford/s3cache.svg"></a> <a href="https://github.com/peterhurford/s3cache/tags"><img src="https://img.shields.io/github/tag/peterhurford/s3cache.svg"></a>
 
 **S3Cache** is a persistant, cross-computer caching layer backed by the [s3mpi](https://github.com/robertzk/s3mpi) package. It supports a key-value store and an optional time to live.
 

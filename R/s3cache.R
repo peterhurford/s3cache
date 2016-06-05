@@ -13,7 +13,7 @@ set <- checkr::ensure(
     expires_in %is% simple_string || expires_in %is% POSIXt || expires_in %is% NULL
   ),
   function(key, value, path = default_path(), expires_in = NULL) {
-    if (exists(name, path = path)) {
+    if (exists(key, path = path)) {
       stop("There already is a cache for ", sQuote(key),
         ". You can use s3cache::forget to overwrite.")
     }
@@ -49,7 +49,7 @@ exists <- checkr::ensure(
     path %is% simple_string),
   function(key, path = default_path()) {
     expire_if_expired(key, path = path)
-    s3mpi::s3exists(key, path = path)
+    s3mpi::s3exists(file.path(key, "value"), path = path)
   })
 
 #' Delete the s3cache at a particular key.
@@ -63,7 +63,8 @@ forget <- checkr::ensure(
     path %is% simple_string),
   function(key, path = default_path()) {
     if (exists(key, path = path)) {
-      s3mpi::s3delete(key, path = path)
+      s3mpi::s3delete(file.path(key, "value"), path = path)
+      s3mpi::s3delete(file.path(key, "metadata"), path = path)
     }
   })
 
@@ -73,18 +74,19 @@ default_path <- function() {
 }
 
 store_object <- function(key, value, expires_in, path) {
-  s3mpi::s3store(value, paste0(key, "/value"), path = path, safe = TRUE)
+  s3mpi::s3store(value, file.path(key, "value"), path = path, safe = TRUE)
   s3mpi::s3store(list(cached_at = Sys.time(), expires_in = expires_in),
-    paste0(key, "/metadata"), path = path, safe = TRUE)
+    file.path(key, "metadata"), path = path, safe = TRUE)
 }
 get_object <- function(key, path) {
-  s3mpi::s3read(paste0(key, "/value"), path = path)
+  s3mpi::s3read(file.path(key, "value"), path = path)
 }
 get_object_metadata <- function(key, path) {
-  s3mpi::s3read(paste0(key, "/metadata"), path = path)
+  s3mpi::s3read(file.path(key, "metadata"), path = path)
 }
 
 expire_if_expired <- function(key, path) {
+  if (!s3mpi::s3exists(file.path(key, "value"))) { return(NULL) }
   metadata <- get_object_metadata(key, path)
   has_expiration <- !is.null(metadata$expires_in)
   if (!has_expiration) { return(NULL) }
