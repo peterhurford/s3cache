@@ -1,0 +1,20 @@
+Package: s3cache
+Title: A persistant, cross-computer caching layer backed by the s3mpi package.
+Version: 0.0.0.9000
+Authors@R: person("Peter", "Hurford", email = "peter@peterhurford.com", role = c("aut", "cre"))
+Description: What the package does (one paragraph).
+Depends:
+    R (>= 3.2.3)
+Imports:
+    s3mpi,
+    checkr,
+    strdate
+Remotes: robertzk/s3mpi,
+    peterhurford/checkr,
+    peterhurford/strdate
+License: MIT + file LICENSE
+Encoding: UTF-8
+LazyData: true
+Suggests:
+    testthat
+RoxygenNote: 5.0.1.9000
